@@ -1,50 +1,55 @@
 #!/usr/bin/python3
 
-# Importing necessary modules
-import pydantic  # Importing Pydantic for defining BaseModel
-import uuid  # Importing UUID for generating unique IDs
-from datetime import datetime  # Importing datetime for timestamping
+import pydantic
+import uuid
+from datetime import datetime
 
-# Defining the BaseModel class
 class BaseModel(pydantic.BaseModel):
-    # Defining attributes with default values and validation rules
-    id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()))  # Generating a unique ID
-    created_at: datetime = pydantic.Field(default_factory=datetime.now)  # Timestamping creation time
-    updated_at: datetime = pydantic.Field(default_factory=datetime.now)  # Timestamping last update time
+    """
+    Craft unique data models, born with time & identity.
+    """
 
-    # Customizing the string representation of the instance
+    id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()),
+                              description="Globally unique ID.")
+    created_at: datetime = pydantic.Field(default_factory=datetime.now,
+                                         description="Birth datetime.")
+    updated_at: datetime = pydantic.Field(default_factory=datetime.now,
+                                         description="Last touched datetime.")
+
     def __str__(self):
+        """
+        Friendly name tag for debugging and logging.
+        """
         return f"[{self.__class__.__name__}] ({self.id}) <{self.__dict__}>"
 
-    # Method to update the 'updated_at' attribute with the current time
     def save(self):
+        """
+        Mark yourself as changed, updating your 'last touched' time.
+        """
         self.updated_at = datetime.now()
 
-    # Method to convert the instance into a dictionary representation
     def to_dict(self):
+        """
+        Speak the universal language of dictionaries to share your data.
+        """
         data = self.__dict__.copy()
-        data["__class__"] = self.__class__.__name__  # Adding class name to the dictionary
-        data["created_at"] = data["created_at"].isoformat()  # Converting creation time to ISO format
-        data["updated_at"] = data["updated_at"].isoformat()  # Converting update time to ISO format
+        data["__class__"] = self.__class__.__name__
+        data["created_at"] = data["created_at"].isoformat()
+        data["updated_at"] = data["updated_at"].isoformat()
         return data
 
-# Example usage (assuming you have other models inheriting from BaseModel):
-class MyModel(BaseModel):
-    name: str  # Defining an additional attribute 'name'
+    def __init__(self, *args, **kwargs):
+        """
+        Constructor: breathe life into a new model or revive an existing one.
+        """
+        super().__init__(*args, **kwargs)
 
-# Creating an instance of MyModel
-model = MyModel(name="Example")
-
-# Outputting the string representation of the model
-print("String representation of the model:")
-print(model)
-
-# Converting the model to a dictionary and outputting it
-print("\nDictionary representation of the model:")
-print(model.to_dict())
-
-# Updating some fields, saving, and checking the dictionary output after updating
-model.name = "Updated Name"
-model.save()
-print("\nUpdated dictionary representation of the model:")
-print(model.to_dict())
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != "__class__":
+                    if key in ["created_at", "updated_at"]:
+                        value = datetime.fromisoformat(value)
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
