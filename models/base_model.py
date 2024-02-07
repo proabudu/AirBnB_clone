@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import pydantic
 import uuid
 from datetime import datetime
