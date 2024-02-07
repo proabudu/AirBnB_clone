@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 
 class BaseModel(pydantic.BaseModel):
-  id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()))  # Colon added after lambda
+  id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()))
   created_at: datetime = pydantic.Field(default_factory=datetime.now)
   updated_at: datetime = pydantic.Field(default_factory=datetime.now)
 
