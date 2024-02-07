@@ -5,9 +5,9 @@ import uuid
 from datetime import datetime
 
 class BaseModel(pydantic.BaseModel):
-  id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()))
-  created_at: datetime = pydantic.Field(default_factory=datetime.now)
-  updated_at: datetime = pydantic.Field(default_factory=datetime.now)
+    id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()))
+    created_at: datetime = pydantic.Field(default_factory=datetime.now)
+    updated_at: datetime = pydantic.Field(default_factory=datetime.now)
 
     def __str__(self):
         return f"[{self.__class__.__name__}] ({self.id}) <{self.__dict__}>"
