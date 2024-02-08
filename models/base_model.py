@@ -3,60 +3,42 @@
 import pydantic
 import uuid
 from datetime import datetime
+from __init__ import storage  # Import storage instance
 
+# Base class for data models, imbued with time & identity
 class BaseModel(pydantic.BaseModel):
-    """
-    Craft unique data models, born with time & identity.
-    """
-
-    id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()),
-                              description="Globally unique ID.")
+    id: str = pydantic.Field(default_factory=str(uuid.uuid4()),
+                              description="Unique ID for this entity.")
     created_at: datetime = pydantic.Field(default_factory=datetime.now,
-                                         description="Birth datetime.")
+                                         description="Time of creation.")
     updated_at: datetime = pydantic.Field(default_factory=datetime.now,
-                                         description="Last touched datetime.")
+                                         description="Last time updated.")
 
     def __str__(self):
         """
-        Friendly name tag for debugging and logging.
+        Human-readable representation for debugging & logging.
         """
         return f"[{self.__class__.__name__}] ({self.id}) <{self.__dict__}>"
 
     def save(self):
         """
-        Mark yourself as changed, updating your 'last touched' time.
+        Preserves changes by updating 'updated_at' and saving to storage.
         """
-        print(f"Saving model: {self}")  # Print before updating
         self.updated_at = datetime.now()
-        print(f"Model saved successfully.")  # Print after updating
-
-    def to_dict(self):
-        """
-        Speak the universal language of dictionaries to share your data.
-        """
-        print(f"Converting model to dictionary: {self}")
-        data = self.__dict__.copy()
-        data["__class__"] = self.__class__.__name__
-        data["created_at"] = data["created_at"].isoformat()
-        data["updated_at"] = data["updated_at"].isoformat()
-        print(f"Dictionary representation: {data}")
-        return data
+        storage.save(self)  # Persist to file using FileStorage
 
     def __init__(self, *args, **kwargs):
         """
-        Constructor: breathe life into a new model or revive an existing one.
+        Creates a new model or revives an existing one.
         """
-        print(f"Creating BaseModel instance...")
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)  # Call parent constructor
 
-        if kwargs:
-            print(f"Reconstructing model from dictionary: {kwargs}")
+        if kwargs:  # Reconstructing from dictionary
             for key, value in kwargs.items():
                 if key != "__class__":
                     if key in ["created_at", "updated_at"]:
                         value = datetime.fromisoformat(value)
                     setattr(self, key, value)
-        else:
-            print(f"Generating new model ID and creation time.")
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
+        else:  # New model
+            storage.new(self)  # Add to storage for persistence
+
