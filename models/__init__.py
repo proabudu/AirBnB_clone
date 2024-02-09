@@ -1,6 +1,3 @@
 #!/usr/bin/python3
 
-from file_storage import FileStorage
-
-storage = FileStorage()
-storage.reload()  # Load objects from the file if it exists
+__all__ = ["BaseModel"]
