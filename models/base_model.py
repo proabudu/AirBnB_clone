@@ -4,6 +4,7 @@
 from datetime import datetime
 import uuid
 from pydantic import BaseModel as PydanticBaseModel
+from models.engine import storage
 
 class BaseModel(PydanticBaseModel):
     """A base model class."""
@@ -21,14 +22,16 @@ class BaseModel(PydanticBaseModel):
         else:
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.now()
+            storage.new(self)
 
     def __str__(self):
         """Return string representation of BaseModel instance."""
         return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
-        """Update updated_at attribute with current datetime."""
+        """Update updated_at attribute with current datetime and save to storage."""
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Return dictionary representation of BaseModel instance."""
