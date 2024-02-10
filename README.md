@@ -4,4 +4,4 @@ This is a practical Python project For us to well understand the use of:
     commands
 functions
 Inheritance
-Classes  
+Classes
