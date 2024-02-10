@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 
+
 class BaseModel:
     """Base class for all model classes."""
 
