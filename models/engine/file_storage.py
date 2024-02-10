@@ -1,6 +1,7 @@
 import json
 from models.base_model import BaseModel
 
+
 class FileStorage:
     """Class for loading and saving objects from/to a JSON file."""
 
