@@ -4,7 +4,9 @@
 from datetime import datetime
 import uuid
 from pydantic import BaseModel as PydanticBaseModel
-from models.engine import storage
+from models.engine.file_storage import FileStorage
+
+storage = FileStorage()
 
 class BaseModel(PydanticBaseModel):
     """A base model class."""
