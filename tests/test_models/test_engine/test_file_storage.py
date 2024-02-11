@@ -46,9 +46,8 @@ class TestFileStorage(unittest.TestCase):
    def test_reload_exception(self, mock_open):
        """Test reload method exception handling."""
        mock_open.side_effect = FileNotFoundError("Mocked file not found")
-       # Exception should not raise
        self.storage.reload()
 
 
 if __name__ == "__main__":
-   unittest.main()
+    unittest.main()
