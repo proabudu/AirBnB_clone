@@ -1,116 +1,147 @@
 #!/usr/bin/python3
+"""
+Console module for HBNB project.
+"""
 import cmd
-import json
-import sys
 import models
-from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
+    """
+    Command interpreter for HBNB project.
+    """
+
     prompt = "(hbnb) "
 
     def do_quit(self, arg):
-        """Quit command to exit the program"""
-        sys.exit()
+        """
+        Quit command to exit the program.
+        """
+        return True
 
     def do_EOF(self, arg):
-        """EOF command to exit the program"""
-        print("")
+        """
+        EOF command to exit the program.
+        """
         return True
 
     def emptyline(self):
-        """Called when an empty line is entered"""
+        """
+        Empty line method.
+        """
         pass
 
     def do_create(self, arg):
-        """Create a new instance of BaseModel"""
+        """
+        Create command to create a new instance of BaseModel.
+        """
         if not arg:
             print("** class name missing **")
             return
-        arg_list = arg.split()
-        if arg_list[0] not in models.classes:
+        try:
+            new_instance = eval(arg)()
+            new_instance.save()
+            print(new_instance.id)
+        except NameError:
             print("** class doesn't exist **")
-            return
-        new_instance = models.classes[arg_list[0]]()
-        new_instance.save()
-        print(new_instance.id)
 
     def do_show(self, arg):
-        """Print the string representation of an instance"""
-        arg_list = arg.split()
+        """
+        Show command to print the string representation of an instance.
+        """
+        args = arg.split()
         if not arg:
             print("** class name missing **")
             return
-        if arg_list[0] not in models.classes:
+        try:
+            class_name = args[0]
+            if len(args) < 2:
+                print("** instance id missing **")
+                return
+            obj_id = args[1]
+            key = "{}.{}".format(class_name, obj_id)
+            if key not in models.storage.all():
+                print("** no instance found **")
+                return
+            print(models.storage.all()[key])
+        except KeyError:
             print("** class doesn't exist **")
-            return
-        if len(arg_list) < 2:
-            print("** instance id missing **")
-            return
-        key = arg_list[0] + "." + arg_list[1]
-        all_objects = models.storage.all()
-        if key in all_objects:
-            print(all_objects[key])
-        else:
-            print("** no instance found **")
 
     def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id"""
-        arg_list = arg.split()
+        """
+        Destroy command to delete an instance.
+        """
+        args = arg.split()
         if not arg:
             print("** class name missing **")
             return
-        if arg_list[0] not in models.classes:
-            print("** class doesn't exist **")
-            return
-        if len(arg_list) < 2:
-            print("** instance id missing **")
-            return
-        key = arg_list[0] + "." + arg_list[1]
-        all_objects = models.storage.all()
-        if key in all_objects:
-            del all_objects[key]
+        try:
+            class_name = args[0]
+            if len(args) < 2:
+                print("** instance id missing **")
+                return
+            obj_id = args[1]
+            key = "{}.{}".format(class_name, obj_id)
+            if key not in models.storage.all():
+                print("** no instance found **")
+                return
+            del models.storage.all()[key]
             models.storage.save()
-        else:
-            print("** no instance found **")
+        except KeyError:
+            print("** class doesn't exist **")
 
     def do_all(self, arg):
-        """Prints all string representation of all instances"""
-        arg_list = arg.split()
-        all_objects = models.storage.all()
+        """
+        All command to print all string representations of instances.
+        """
+        args = arg.split()
+        objects = models.storage.all()
         if not arg:
-            print([str(obj) for obj in all_objects.values()])
+            print([str(obj) for obj in objects.values()])
             return
-        if arg_list[0] not in models.classes:
+        try:
+            class_name = args[0]
+            if class_name not in models.storage.classes():
+                print("** class doesn't exist **")
+                return
+            print([str(obj) for obj in objects.values() if obj.__class__.__name__ == class_name])
+        except KeyError:
             print("** class doesn't exist **")
-            return
-        print([str(obj) for key, obj in all_objects.items() if key.startswith(arg_list[0])])
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id"""
-        arg_list = arg.split()
+        """
+        Update command to update an instance attribute.
+        """
+        args = arg.split()
         if not arg:
             print("** class name missing **")
             return
-        if arg_list[0] not in models.classes:
+        try:
+            class_name = args[0]
+            if class_name not in models.storage.classes():
+                print("** class doesn't exist **")
+                return
+            if len(args) < 2:
+                print("** instance id missing **")
+                return
+            obj_id = args[1]
+            key = "{}.{}".format(class_name, obj_id)
+            if key not in models.storage.all():
+                print("** no instance found **")
+                return
+            if len(args) < 3:
+                print("** attribute name missing **")
+                return
+            if len(args) < 4:
+                print("** value missing **")
+                return
+            attr_name = args[2]
+            attr_value = args[3]
+            obj = models.storage.all()[key]
+            setattr(obj, attr_name, attr_value)
+            models.storage.save()
+        except KeyError:
             print("** class doesn't exist **")
-            return
-        if len(arg_list) < 2:
-            print("** instance id missing **")
-            return
-        key = arg_list[0] + "." + arg_list[1]
-        all_objects = models.storage.all()
-        if key not in all_objects:
-            print("** no instance found **")
-            return
-        if len(arg_list) < 3:
-            print("** attribute name missing **")
-            return
-        if len(arg_list) < 4:
-            print("** value missing **")
-            return
-        setattr(all_objects[key], arg_list[2], arg_list[3])
-        models.storage.save()
 
 
 if __name__ == '__main__':
