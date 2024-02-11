@@ -1,65 +1,36 @@
 #!/usr/bin/python3
+"""This module defines the BaseModel class"""
 
 import uuid
-from datetime import datetime
-
-
-#!/usr/bin/python3
-
-import uuid
-from datetime import datetime
-
+import datetime
 
 class BaseModel:
-    """Base class for all models with common attributes and methods."""
+    """This class defines the common attributes and methods for other classes"""
 
-    def __init__(self, *args, **kwargs):
-        """Initializes a new BaseModel instance.
-
-        Args:
-            *args: Unused positional arguments.
-            **kwargs: Keyword arguments representing model attributes.
-        """
-        if kwargs:
-            # Create instance from dictionary representation
-            self.__dict__.update(kwargs)
-            if "created_at" in kwargs:
-                self.created_at = datetime.fromisoformat(kwargs["created_at"])
-            if "updated_at" in kwargs:
-                self.updated_at = datetime.fromisoformat(kwargs["updated_at"])
-            del self.__dict__["__class__"]  # Remove __class__ from attributes
-        else:
-            # Create new instance with default attributes
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = self.created_at
+    def __init__(self, **kwargs):
+        """This method initializes the instance attributes"""
+        self.id = str(uuid.uuid4()) # generate a unique id as a string
+        self.created_at = datetime.datetime.now() # assign the current datetime
+        self.updated_at = datetime.datetime.now() # assign the current datetime
+        # assign any other attributes from kwargs
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __str__(self):
-        """Returns a human-readable string rep of the model instance."""
-        return (
-            f"[<class name>: {type(self).__name__}] "
-            f"(<ID>: {self.id}) {self.__dict__}"
-        )  # Line 18 split into multiple lines
+        """This method returns a string representation of the object"""
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """Updates the 'updated_at' timestamp to reflect latest changes."""
-        self.updated_at = datetime.now()
+        """This method updates the updated_at attribute with the current datetime"""
+        self.updated_at = datetime.datetime.now()
 
     def to_dict(self):
-        """Converts the model instance into a dictionary representation."""
+        """This method returns a dictionary representation of the object"""
+        # copy the instance dictionary
         obj_dict = self.__dict__.copy()
-        obj_dict["__class__"] = type(self).__name__
+        # add the __class__ key with the class name
+        obj_dict["__class__"] = self.__class__.__name__
+        # convert the datetime attributes to strings in ISO format
         obj_dict["created_at"] = self.created_at.isoformat()
         obj_dict["updated_at"] = self.updated_at.isoformat()
         return obj_dict
-
-
-# Example usage
-my_model = BaseModel()
-print(my_model)
-
-# Custom behavior based on specific user/context
-if my_model.__class__.__name__ == "BaseModel":
-    print("It's a base model with no additional attributes!")
-else:
-    print("It's  extended model with custom attributes:", my_model.__dict__)
