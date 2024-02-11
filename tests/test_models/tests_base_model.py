@@ -3,6 +3,7 @@
 """Test file for BaseModel class."""
 
 import unittest
+import datetime
 from models.base_model import BaseModel
 from models.engine import storage
 
@@ -43,8 +44,10 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(base_dict, dict)
         self.assertEqual(base_dict["__class__"], "BaseModel")
         self.assertEqual(base_dict["id"], self.base.id)
-        self.assertEqual(base_dict["created_at"], self.base.created_at.isoformat())
-        self.assertEqual(base_dict["updated_at"], self.base.updated_at.isoformat())
+        self.assertEqual(
+            base_dict["created_at"], self.base.created_at.isoformat())
+        self.assertEqual(
+            base_dict["updated_at"], self.base.updated_at.isoformat())
 
 if __name__ == "__main__":
     unittest.main()
