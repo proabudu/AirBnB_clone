@@ -1,8 +1,7 @@
-# content of tests/test_base_model.py
+#!/usr/bin/python3
+
 import unittest
 import sys
-directory_path = AirBnB_clone/models/base_model
-sys.path.append(directory_path)
 from models.base_model import BaseModel
 
 
