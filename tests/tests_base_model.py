@@ -1,7 +1,9 @@
-# content of tests/test_base_model.py
+#!/usr/bin/python3
+
 import unittest
 import sys
-print(sys.path)
+from models.base_model import BaseModel
+
 
 
 
