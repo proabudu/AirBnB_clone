@@ -5,8 +5,6 @@ import sys
 from models.base_model import BaseModel
 
 
-
-
 class TestBaseModel(unittest.TestCase):
     """This class tests the BaseModel class"""
 
