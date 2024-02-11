@@ -1,6 +1,6 @@
 # content of tests/test_base_model.py
 import unittest
-from models.base_model import BaseModel
+from ..models.base_model import BaseModel
 import sys
 print(sys.path)
 
