@@ -90,23 +90,19 @@ class HBNBCommand(cmd.Cmd):
         except KeyError:
             print("** class doesn't exist **")
 
-    def do_all(self, arg):
-        """
-        All command to print all string representations of instances.
-        """
-        args = arg.split()
-        objects = models.storage.all()
-        if not arg:
-            print([str(obj) for obj in objects.values()])
-            return
-        try:
-            class_name = args[0]
-            if class_name not in models.storage.classes():
-                print("** class doesn't exist **")
-                return
-            print([str(obj) for obj in objects.values() if obj.__class__.__name__ == class_name])
-        except KeyError:
-            print("** class doesn't exist **")
+   def do_all(self, line):
+    """Prints all string representations of all instances based on class name."""
+    args = line.split()
+    if len(args) == 0:
+        print("** class name missing **")
+        return
+    class_name = args[0]
+    if class_name not in models.storage.all():
+        print("** class doesn't exist **")
+        return
+    objects = models.storage.all()[class_name]
+    for obj_id, obj in objects.items():
+        print(obj)
 
     def do_update(self, arg):
         """
