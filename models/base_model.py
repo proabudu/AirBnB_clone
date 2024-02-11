@@ -32,4 +32,4 @@ class BaseModel:
 
 # Example usage
 my_model = BaseModel()
-print(my_model)  # Output: [<uuid4>] BaseModel: {'id': ..., 'created_at': ..., 'updated_at': ...}
+print(my_model)  # Output: [<uuid4>] BaseModel: 'updated_at': ...}
