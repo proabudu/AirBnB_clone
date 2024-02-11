@@ -50,5 +50,6 @@ class TestBaseModel(unittest.TestCase):
         self.user.add_points(-50)
         self.assertEqual(self.user.profile["points"], 50)
 
+
 if __name__ == "__main__":
     unittest.main()
