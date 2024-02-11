@@ -6,23 +6,24 @@ import datetime
 
 
 class BaseModel:
-    """This class defin the common attributes and methods for other classes"""
+    """This class definescommon attributes and methods for other classes"""
 
     def __init__(self, **kwargs):
         """This method initializes the instance attributes"""
-        self.id = str(uuid.uuid4()) # generate a unique id as a string
-        self.created_at = datetime.datetime.now() # assign the current datetim
-        self.updated_at = datetime.datetime.now() # assigthe current datetime
+        self.id = str(uuid.uuid4())  # generate a unique id as a string
+        self.created_at = datetime.datetime.now()  # assign the current
+        self.updated_at = datetime.datetime.now()  # assign the current 
         # assign any other attributes from kwargs
         for key, value in kwargs.items():
             setattr(self, key, value)
 
     def __str__(self):
         """This method returns a string representation of the object"""
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        return "[{}] ({}) {}".format(self.__class__.__name__,
+                                     self.id, self.__dict__)
 
     def save(self):
-        """This method updates the updated_at attribute current datetime"""
+        """This method updates the updated_at attributeurrent datetime"""
         self.updated_at = datetime.datetime.now()
 
     def to_dict(self):
