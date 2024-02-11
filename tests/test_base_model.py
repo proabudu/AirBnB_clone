@@ -5,7 +5,7 @@ from base_model import BaseModel
 class TestBaseModel(unittest.TestCase):
 
     def test_instantiation(self):
-        """Test that a new instance is created with correct attributes."""
+        """Test creation of a new instance with correct attributes."""
         model = BaseModel()
         self.assertIsNotNone(model.id)
         self.assertIsInstance(model.id, str)
@@ -15,13 +15,15 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(model.updated_at, datetime)
 
     def test_string_representation(self):
-        """Test that the __str__ method returns the expected string."""
+        """Test __str__ method for expected string representation."""
         model = BaseModel()
-        expected_str = f"[<class name>: BaseModel] (<ID>: {model.id}) {model.__dict__}"
+        expected_str = (
+            f"[<class name>: BaseModel] (<ID>: {model.id}) {model.__dict__}"
+        )
         self.assertEqual(str(model), expected_str)
 
     def test_save_method(self):
-        """Test that the save method updates the updated_at timestamp."""
+        """Test save method updates updated_at timestamp."""
         model = BaseModel()
         original_updated_at = model.updated_at
         model.save()
@@ -29,7 +31,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertLess(original_updated_at, model.updated_at)
 
     def test_to_dict_method(self):
-        """Test that the to_dict method returns the expected dictionary."""
+        """Test to_dict method for expected dictionary representation."""
         model = BaseModel()
         model_dict = model.to_dict()
         self.assertEqual(model_dict["__class__"], "BaseModel")
