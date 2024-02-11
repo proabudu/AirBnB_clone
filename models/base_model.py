@@ -1,21 +1,21 @@
 #!/usr/bin/python3
 
-"""This module defines the BaseModel class"""
+"""BaseModel class Module is defined here."""
 
 import uuid
 import datetime
 
 
 class BaseModel:
-    """This class defines common attributes and methods for other classes"""
+    """This class defines common attribut and methods for other classes."""
 
     def __init__(self, *args, **kwargs):
-        """This method initializes the instance attributes"""
-
+        """Initialize instance attributes."""
         if kwargs:
             for key, value in kwargs.items():
-                if key == 'created_at' or key == 'updated_at':
-                    value = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                if key in ['created_at', 'updated_at']:
+                    value = datetime.datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != "__class__":
                     setattr(self, key, value)
             if "id" not in kwargs:
@@ -30,16 +30,16 @@ class BaseModel:
             self.updated_at = datetime.datetime.now()
 
     def __str__(self):
-        """This method returns a string representation of the object"""
-        return "[{}] ({}) {}".format(self.__class__.__name__,
-                                     self.id, self.__dict__)
+        """Return a string representation of the object."""
+        return "[{}] ({}) {}".format(
+            self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """This method updates the updated_at attribute with curdatetime"""
+        """Update the updated_at attribute with current datetime."""
         self.updated_at = datetime.datetime.now()
 
     def to_dict(self):
-        """This method returns a dictionary representation of the object"""
+        """Return a dictionary representation of the object."""
         obj_dict = self.__dict__.copy()
         obj_dict["__class__"] = self.__class__.__name__
         obj_dict["created_at"] = self.created_at.isoformat()
