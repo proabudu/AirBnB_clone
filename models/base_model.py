@@ -4,14 +4,35 @@ import uuid
 from datetime import datetime
 
 
+#!/usr/bin/python3
+
+import uuid
+from datetime import datetime
+
+
 class BaseModel:
     """Base class for all models with common attributes and methods."""
 
-    def __init__(self):
-        """Initializes with unique ID, timestamps, and other attributes."""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+    def __init__(self, *args, **kwargs):
+        """Initializes a new BaseModel instance.
+
+        Args:
+            *args: Unused positional arguments.
+            **kwargs: Keyword arguments representing model attributes.
+        """
+        if kwargs:
+            # Create instance from dictionary representation
+            self.__dict__.update(kwargs)
+            if "created_at" in kwargs:
+                self.created_at = datetime.fromisoformat(kwargs["created_at"])
+            if "updated_at" in kwargs:
+                self.updated_at = datetime.fromisoformat(kwargs["updated_at"])
+            del self.__dict__["__class__"]  # Remove __class__ from attributes
+        else:
+            # Create new instance with default attributes
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
 
     def __str__(self):
         """Returns a human-readable string rep of the model instance."""
