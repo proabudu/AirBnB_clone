@@ -28,5 +28,6 @@ class HBNBCommand(cmd.Cmd):
 
     # Add more commands and methods as needed
 
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
