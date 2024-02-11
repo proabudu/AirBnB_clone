@@ -12,7 +12,7 @@ class BaseModel:
         """This method initializes the instance attributes"""
         self.id = str(uuid.uuid4())  # generate a unique id as a string
         self.created_at = datetime.datetime.now()  # assign the current
-        self.updated_at = datetime.datetime.now()  # assign the current 
+        self.updated_at = datetime.datetime.now()  # assign the current
         # assign any other attributes from kwargs
         for key, value in kwargs.items():
             setattr(self, key, value)
