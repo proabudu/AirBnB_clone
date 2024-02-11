@@ -6,6 +6,7 @@ import uuid
 import datetime
 from models.engine import storage
 
+
 class BaseModel:
     """This class defines common attributes and methods for other classes."""
 
