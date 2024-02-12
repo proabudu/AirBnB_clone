@@ -3,6 +3,7 @@
 """Test file for HBNBCommand class."""
 
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
