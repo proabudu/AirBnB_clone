@@ -1,51 +1,86 @@
-#!/usr/bin/python3
-
-"""Test file for HBNBCommand class."""
-
 import unittest
-from pathlib import Path
 from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
 
 
-class TestHBNBCommand(unittest.TestCase):
-    """This class contains unit tests for the HBNBCommand class."""
+class TestConsole(unittest.TestCase):
+    """
+    Test cases for the HBNBCommand class in console.py.
+    """
 
-    def setUp(self):
-        """Create an instance of HBNBCommand for each test."""
-        self.cmd = HBNBCommand()
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_quit(self, mock_stdout):
+        """
+        Test quit command.
+        """
+        with patch('builtins.input', return_value="quit"):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '')
 
-    def tearDown(self):
-        """Delete the instance of HBNBCommand after each test."""
-        del self.cmd
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_EOF(self, mock_stdout):
+        """
+        Test EOF command.
+        """
+        with patch('builtins.input', side_effect=["EOF"]):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '')
 
-    def test_do_quit(self):
-        """Test the do_quit method of HBNBCommand."""
-        with patch('sys.stdout', new=StringIO()) as output:
-            self.assertTrue(self.cmd.do_quit(''))
-            self.assertEqual(output.getvalue(), '')
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_emptyline(self, mock_stdout):
+        """
+        Test empty line input.
+        """
+        with patch('builtins.input', return_value=""):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '')
 
-    def test_do_EOF(self):
-        """Test the do_EOF method of HBNBCommand."""
-        with patch('sys.stdout', new=StringIO()) as output:
-            self.assertTrue(self.cmd.do_EOF(''))
-            self.assertEqual(output.getvalue(), '')
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_create(self, mock_stdout):
+        """
+        Test create command.
+        """
+        with patch('builtins.input', side_effect=["create BaseModel"]):
+            HBNBCommand().cmdloop()
+            self.assertTrue(len(mock_stdout.getvalue()) > 0)
 
-    def test_emptyline(self):
-        """Test the emptyline method of HBNBCommand."""
-        with patch('sys.stdout', new=StringIO()) as output:
-            self.assertFalse(self.cmd.emptyline())
-            self.assertEqual(output.getvalue(), '')
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_show(self, mock_stdout):
+        """
+        Test show command.
+        """
+        with patch('builtins.input', side_effect=["show BaseModel", "EOF"]):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '** instanmissing **\n')
 
-    def test_do_help(self):
-        """Test the do_help method of HBNBCommand."""
-        with patch('sys.stdout', new=StringIO()) as output:
-            self.assertFalse(self.cmd.do_help(''))
-            self.assertIn('Documented commands', output.getvalue())
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_destroy(self, mock_stdout):
+        """
+        Test destroy command.
+        """
+        with patch('builtins.input', side_effect=["destroyBaseModel", "EOF"]):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '** instancissing **\n')
 
-    # Add more tests and methods as needed
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_all(self, mock_stdout):
+        """
+        Test all command.
+        """
+        with patch('builtins.input', side_effect=["all BaseModel", "EOF"]):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '** oesn\'t exist **\n')
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_update(self, mock_stdout):
+        """
+        Test update command.
+        """
+        with patch('builtins.input', side_effect=["update BaseModel", "EOF"]):
+            HBNBCommand().cmdloop()
+            self.assertEqual(mock_stdout.getvalue(), '** instaeidising **\n')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
