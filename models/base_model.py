@@ -3,6 +3,7 @@
 from uuid import uuid4
 from datetime import datetime
 
+
 class BaseModel:
     def __init__(self, *args, **kwargs):
         """Initialize BaseModel instance."""
